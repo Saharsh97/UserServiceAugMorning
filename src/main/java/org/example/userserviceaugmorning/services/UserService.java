@@ -90,7 +90,7 @@ public class UserService {
 
     public Token logout(Long userId, String tokenValue) throws UserNotFoundException, TokenAlreadyExpired {
         // do all the checks
-        Optional<Token> optionalToken = tokenRepository.findByUserIdAndExpiryDateGreaterThanAndDeleted(userId, new Date(), false);
+        Optional<Token> optionalToken = tokenRepository.findByUserIdAndExpiryDateGreaterThanAndDeletedIsFalse(userId, new Date());
         if(optionalToken.isEmpty()){
             throw new TokenAlreadyExpired("token is already expired");
         }
@@ -102,15 +102,10 @@ public class UserService {
         return deletedToken;
     }
 
-    public boolean validateToken(String tokenValue, Long userId) throws TokenAlreadyExpired, InvalidTokenArgument {
-        Optional<Token> optionalToken = tokenRepository.findByUserIdAndExpiryDateGreaterThanAndDeleted(userId, new Date(), false);
+    public boolean validateToken(String tokenValue) throws TokenAlreadyExpired, InvalidTokenArgument {
+        Optional<Token> optionalToken = tokenRepository.findByValueAndExpiryDateGreaterThanAndDeletedIsFalse(tokenValue, new Date());
         if(optionalToken.isEmpty()){
             throw new TokenAlreadyExpired("token is already expired");
-        }
-        Token tokenInDB = optionalToken.get();
-
-        if(!tokenInDB.equals(tokenValue)){
-            throw new InvalidTokenArgument("wrong token passed");
         }
         return true;
     }

@@ -55,8 +55,8 @@ public class UserController {
     }
 
     @PostMapping("/validateToken")
-    public ValidateTokenResponseDTO validateToken(@RequestBody ValidateTokenRequestDTO requestDTO) throws TokenAlreadyExpired, InvalidTokenArgument {
-        Boolean isValid = userService.validateToken(requestDTO.getTokenValue(), requestDTO.getUserId());
+    public ValidateTokenResponseDTO validateToken(@RequestHeader ValidateTokenRequestDTO requestDTO) throws TokenAlreadyExpired, InvalidTokenArgument {
+        Boolean isValid = userService.validateToken(requestDTO.getTokenValue());
         ValidateTokenResponseDTO responseDTO = new ValidateTokenResponseDTO();
         responseDTO.setTokenVerificationStatus(isValid == true ? TokenVerificationStatus.VERIFIED : TokenVerificationStatus.MALICIOUS);
         responseDTO.setResponseStatus(ResponseStatus.SUCCESS);

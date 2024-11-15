@@ -11,5 +11,7 @@ import java.util.Optional;
 public interface TokenRepository extends JpaRepository<Token, Long> {
     Token save(Token token);
 
-    Optional<Token> findByUserIdAndExpiryDateGreaterThanAndDeleted(Long userId, Date currentDate, boolean isDeleted);
+    Optional<Token> findByUserIdAndExpiryDateGreaterThanAndDeletedIsFalse(Long userId, Date currentDate);
+
+    Optional<Token> findByValueAndExpiryDateGreaterThanAndDeletedIsFalse(String value, Date currentDate);
 }
