@@ -89,6 +89,7 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         // updated to just builder to pass first time.
         // change this to bcrypt encoded value for "password"
+        System.out.println("storing user in memory");
         UserDetails userDetails = User.builder() // creating this entry for DB.
                 .username("user")
                 .password("$2a$15$QKxP5s9M07qkdlBLVjpvS.t55VL9uuZxDCDKCk3YmT1oiw2zRroXK")
@@ -104,23 +105,24 @@ public class SecurityConfig {
     // so we should store this in DB.
 
     // this repo is an interface, exposes 3 diff methods.
-    @Bean
-    public RegisteredClientRepository registeredClientRepository() {
-        RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
-                .clientId("oidc-client")
-                .clientSecret("{noop}secret")
-                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-                .redirectUri("http://127.0.0.1:8080/login/oauth2/code/oidc-client")
-                .postLogoutRedirectUri("http://127.0.0.1:8080/")
-                .scope(OidcScopes.OPENID)
-                .scope(OidcScopes.PROFILE)
-                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
-                .build();
-
-        return new InMemoryRegisteredClientRepository(oidcClient);
-    }
+//    @Bean
+//    public RegisteredClientRepository registeredClientRepository() {
+//        RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID().toString())
+//                .clientId("oidc-client")
+//                .clientSecret("{noop}secret")
+//                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+//                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+//                .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+//                .redirectUri("http://127.0.0.1:8080/login/oauth2/code/oidc-client")
+//                .postLogoutRedirectUri("http://127.0.0.1:8080/")
+////                .scope(OidcScopes.OPENID)
+////                .scope(OidcScopes.PROFILE)
+//                .scope("ADMIN")
+//                .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+//                .build();
+//
+//        return new InMemoryRegisteredClientRepository(oidcClient);
+//    }
 
     @Bean
     public JWKSource<SecurityContext> jwkSource() {
