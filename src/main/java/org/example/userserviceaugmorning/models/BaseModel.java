@@ -19,7 +19,7 @@ public class BaseModel {
     private Date createdAt;
     private Date updatedAt;
 
-    private boolean isDeleted;
+    private boolean deleted = false;
     // when user logout, or malicious token is received
     // if this current token t1 is deleted
     // the next time user makes any request, they will t1
