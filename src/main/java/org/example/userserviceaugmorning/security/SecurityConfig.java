@@ -80,17 +80,17 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        System.out.println("using hardcoded user details in-memory");
-        UserDetails userDetails = User.builder()
-                .username("saharsh.singh_1@scaler.com")
-                .password("$2a$12$.XGRxIIqZJl48MS3UgjHVuxVqibpDcwDWOYgIlntSt/Vskqo8Tm22")
-                .roles("STUDENT")
-                .build();
-
-        return new InMemoryUserDetailsManager(userDetails);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        System.out.println("using hardcoded user details in-memory");
+//        UserDetails userDetails = User.builder()
+//                .username("saharsh.singh_1@scaler.com")
+//                .password("$2a$12$.XGRxIIqZJl48MS3UgjHVuxVqibpDcwDWOYgIlntSt/Vskqo8Tm22")
+//                .roles("STUDENT")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(userDetails);
+//    }
 
 //    @Bean
 //    public RegisteredClientRepository registeredClientRepository() {

@@ -2,6 +2,7 @@ package org.example.userserviceaugmorning.models;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,7 @@ public class User extends BaseModel {
     private String hashedPassword;
 
     @Enumerated
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
 
     private UserStatus userStatus;
