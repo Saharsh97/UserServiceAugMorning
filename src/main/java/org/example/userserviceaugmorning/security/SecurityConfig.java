@@ -77,9 +77,16 @@ public class SecurityConfig {
     @Order(2)
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
             throws Exception {
-        http
-                .authorizeHttpRequests((authorize) -> authorize
-                        .anyRequest().authenticated()
+                http
+                .authorizeHttpRequests((authorize) -> {
+                            try {
+                                authorize
+                                        .anyRequest().permitAll()
+                                        .and().cors().disable()
+                                        .csrf().disable();
+                            } catch (Exception e){
+                            }
+                        }
                 )
                 // Form login handles the redirect to the login page from the
                 // authorization server filter chain
@@ -163,8 +170,9 @@ public class SecurityConfig {
             if(OAuth2TokenType.ACCESS_TOKEN.equals(context.getTokenType())){
                 context.getClaims().claims((claims) -> {
                     Set<String> roles = AuthorityUtils.authorityListToSet(context.getPrincipal().getAuthorities());
-                    claims.put("theme", "dark");
                     claims.put("roles", roles);
+                    claims.put("user nick name", context.getPrincipal().getName());
+                    claims.put("theme", "dark");
                     claims.put("numberOfVisits", 10);
                 });
             }
