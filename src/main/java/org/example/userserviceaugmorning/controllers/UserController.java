@@ -1,5 +1,6 @@
 package org.example.userserviceaugmorning.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.example.userserviceaugmorning.dtos.*;
 import org.example.userserviceaugmorning.dtos.enums.ResponseStatus;
 import org.example.userserviceaugmorning.dtos.enums.TokenVerificationStatus;
@@ -26,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public SignUpResponseDTO signUp(@RequestBody SignUpRequestDTO requestDTO) throws UserAlreadyExistsException {
+    public SignUpResponseDTO signUp(@RequestBody SignUpRequestDTO requestDTO) throws UserAlreadyExistsException, JsonProcessingException {
         User user = userService.signUp(requestDTO.getUserName(), requestDTO.getEmail(), requestDTO.getPassword());
 
         SignUpResponseDTO signUpResponseDTO = new SignUpResponseDTO();

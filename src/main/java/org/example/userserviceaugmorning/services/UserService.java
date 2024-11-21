@@ -1,12 +1,16 @@
 package org.example.userserviceaugmorning.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.example.userserviceaugmorning.dtos.SignUpEventDTO;
 import org.example.userserviceaugmorning.exception.*;
 import org.example.userserviceaugmorning.models.Token;
 import org.example.userserviceaugmorning.models.User;
 import org.example.userserviceaugmorning.repositories.TokenRepository;
 import org.example.userserviceaugmorning.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,12 +25,16 @@ public class UserService {
     private UserRepository userRepository;
     private TokenRepository tokenRepository;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private KafkaTemplate<String, String> kafkaTemplate;
+    private ObjectMapper objectWrapper;
 
     @Autowired
-    public UserService(UserRepository userRepository, TokenRepository tokenRepository, BCryptPasswordEncoder bCrypt) {
+    public UserService(UserRepository userRepository, TokenRepository tokenRepository, BCryptPasswordEncoder bCrypt, KafkaTemplate<String, String> kafkaTemplate, ObjectMapper objectWrapper) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
         this.bCryptPasswordEncoder = bCrypt;
+        this.kafkaTemplate = kafkaTemplate;
+        this.objectWrapper = objectWrapper;
     }
 
     public User getUserById(Long userId) throws UserNotFoundException {
@@ -41,7 +49,7 @@ public class UserService {
         return savedUser;
     }
 
-    public User signUp(String name, String email, String password) throws UserAlreadyExistsException {
+    public User signUp(String name, String email, String password) throws UserAlreadyExistsException, JsonProcessingException {
         // perform all checks
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if(optionalUser.isPresent()){
@@ -55,6 +63,18 @@ public class UserService {
         user.setHashedPassword(bCryptPasswordEncoder.encode(password));
 
         User savedUser = userRepository.save(user);
+
+        SignUpEventDTO signUpEventDTO = new SignUpEventDTO();
+        signUpEventDTO.setTo(email);
+        signUpEventDTO.setFrom("saharsh.singh_1@scaler.com");
+        signUpEventDTO.setSubject("Welcome to Scaler");
+        signUpEventDTO.setBody("we are happy to register you to our website" +
+                " looking forward to you achieving great success!!");
+        kafkaTemplate.send(
+                "signupEventTopic",
+                objectWrapper.writeValueAsString(signUpEventDTO)
+        );
+        System.out.println("sent to kafka : " + signUpEventDTO);
         return savedUser;
     }
 
