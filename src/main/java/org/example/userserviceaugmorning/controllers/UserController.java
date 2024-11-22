@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 // scaler/user/signup
 public class UserController {
 
@@ -21,6 +21,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public UserDTO getUserById(@PathVariable("id") Long userId) throws UserNotFoundException {
+        System.out.println("Got request for user with id " + userId);
         User user = userService.getUserById(userId);
         UserDTO userDTO = new UserDTO(user);
         return userDTO;
