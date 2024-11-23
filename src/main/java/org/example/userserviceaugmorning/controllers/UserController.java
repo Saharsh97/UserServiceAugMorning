@@ -22,6 +22,7 @@ public class UserController {
     @GetMapping("/{id}")
     public UserDTO getUserById(@PathVariable("id") Long userId) throws UserNotFoundException {
         User user = userService.getUserById(userId);
+        System.out.println("received request for user with Id " + userId);
         UserDTO userDTO = new UserDTO(user);
         return userDTO;
     }
